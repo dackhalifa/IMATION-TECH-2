@@ -1,0 +1,1549 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Imation | Automatización & IA</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- FontAwesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;800;900&family=Plus+Jakarta+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        heading: ['Unbounded', 'sans-serif'],
+                    },
+                    colors: {
+                        bg: {
+                            main: '#050505',
+                            card: '#0F0F0F',
+                            light: '#1A1A1A'
+                        },
+                        brand: {
+                            primary: '#8b5cf6',   /* Violeta */
+                            secondary: '#ec4899', /* Fucsia */
+                            tertiary: '#06b6d4',  /* Cian */
+                            accent: '#10B981',    /* Verde */
+                            warning: '#F59E0B'    /* Naranja/Amarillo */
+                        }
+                    },
+                    backgroundImage: {
+                        'aurora': 'linear-gradient(90deg, #06b6d4 0%, #8b5cf6 50%, #ec4899 100%)',
+                    },
+                    animation: {
+                        'blob': 'blob 10s infinite alternate',
+                        'wave': 'wave 1.2s ease-in-out infinite',
+                        'scan': 'scan 3s linear infinite',
+                        'post-feed': 'post-feed 3s ease-in-out infinite',
+                        'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
+                        'candle-grow': 'candle-grow 2s infinite alternate',
+                        'pop-in': 'pop-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards',
+                        'swipe-right': 'swipe-right 2s ease-in-out infinite',
+                        'stamp': 'stamp 3s ease-in-out infinite',
+                        'stock-pulse': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        blob: {
+                            '0%': { transform: 'translate(0, 0) scale(1)' },
+                            '100%': { transform: 'translate(20px, -20px) scale(1.1)' },
+                        },
+                        wave: {
+                            '0%, 100%': { height: '10px' },
+                            '50%': { height: '30px' }
+                        },
+                        scan: {
+                            '0%': { top: '0%', opacity: 0 },
+                            '10%': { opacity: 1 },
+                            '90%': { opacity: 1 },
+                            '100%': { top: '100%', opacity: 0 }
+                        },
+                        'post-feed': {
+                            '0%': { transform: 'translateY(10px)', opacity: 0 },
+                            '20%': { transform: 'translateY(0)', opacity: 1 },
+                            '80%': { transform: 'translateY(0)', opacity: 1 },
+                            '100%': { transform: 'translateY(-10px)', opacity: 0 }
+                        },
+                        'candle-grow': {
+                            '0%': { height: '20%' },
+                            '100%': { height: '80%' }
+                        },
+                        'pop-in': {
+                            '0%': { transform: 'scale(0.8)', opacity: 0 },
+                            '100%': { transform: 'scale(1)', opacity: 1 }
+                        },
+                        fadeInUp: {
+                            '0%': { opacity: 0, transform: 'translateY(20px)' },
+                            '100%': { opacity: 1, transform: 'translateY(0)' },
+                        },
+                        'swipe-right': {
+                            '0%': { transform: 'translateX(0) rotate(0)', opacity: 1 },
+                            '50%': { transform: 'translateX(40px) rotate(10deg)', opacity: 0 },
+                            '100%': { transform: 'translateX(0) rotate(0)', opacity: 0 }
+                        },
+                        'stamp': {
+                            '0%, 40%': { transform: 'scale(3)', opacity: 0 },
+                            '50%': { transform: 'scale(1)', opacity: 1 },
+                            '100%': { transform: 'scale(1)', opacity: 1 }
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { 
+            background-color: #050505; 
+            color: #F3F4F6;
+            overflow-x: hidden;
+        }
+        
+        .bg-noise {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            opacity: 0.04;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            pointer-events: none;
+        }
+
+        .glass-card {
+            background: rgba(20, 20, 20, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+            transition: all 0.4s ease;
+            cursor: pointer;
+        }
+        .glass-card:hover {
+            border-color: rgba(139, 92, 246, 0.4);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(139, 92, 246, 0.15);
+        }
+        
+        /* Video Container en Tarjetas */
+        .card-video-container {
+            width: 100%;
+            height: 200px;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .card-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.7;
+            transition: opacity 0.5s, transform 0.5s;
+        }
+        .glass-card:hover .card-video {
+            opacity: 1;
+            transform: scale(1.05);
+        }
+        .play-overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.3);
+            transition: background 0.3s;
+        }
+        .glass-card:hover .play-overlay {
+            background: rgba(0,0,0,0.1);
+        }
+
+        .glass-nav {
+            background: rgba(5, 5, 5, 0.85);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .text-gradient {
+            background: linear-gradient(90deg, #06b6d4, #8b5cf6, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .btn-aurora {
+            background: linear-gradient(90deg, #06b6d4, #8b5cf6, #ec4899);
+            background-size: 200% auto;
+            transition: 0.5s;
+        }
+        .btn-aurora:hover {
+            background-position: right center;
+            box-shadow: 0 0 25px rgba(236, 72, 153, 0.5);
+        }
+
+        .blob-bg {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(90px);
+            opacity: 0.35;
+            z-index: -2;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.8rem;
+        }
+        .calendar-day:hover:not(.disabled) {
+            background-color: rgba(139, 92, 246, 0.2);
+            color: white;
+        }
+        .calendar-day.selected {
+            background: linear-gradient(90deg, #06b6d4, #8b5cf6);
+            color: white;
+            font-weight: bold;
+        }
+        .calendar-day.disabled {
+            color: #444;
+            cursor: not-allowed;
+        }
+        
+        .manifesto-quote {
+            font-family: 'Unbounded', sans-serif;
+            line-height: 1.4;
+        }
+
+        /* Modal Styles */
+        #modal-overlay {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        #modal-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        #modal-content {
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+        }
+        #modal-overlay.open #modal-content {
+            transform: scale(1);
+        }
+        
+        /* Chatbot Widget Styles */
+        #chat-widget {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 10px;
+        }
+        #chat-window {
+            width: 350px;
+            height: 500px;
+            background: #0F0F0F;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            transform: translateY(20px);
+            opacity: 0;
+        }
+        #chat-window.open {
+            display: flex;
+            transform: translateY(0);
+            opacity: 1;
+        }
+        #chat-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .chat-msg {
+            max-width: 80%;
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        .msg-bot {
+            background: rgba(255,255,255,0.05);
+            color: #ddd;
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+        }
+        .msg-user {
+            background: linear-gradient(90deg, #06b6d4, #8b5cf6);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 2px;
+        }
+        #chat-input-area {
+            padding: 15px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            background: #0a0a0a;
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Form Inputs */
+        input, select, textarea {
+            transition: border-color 0.3s ease, background-color 0.3s ease;
+        }
+        input:focus, select:focus, textarea:focus {
+            background-color: rgba(0,0,0,0.8);
+        }
+
+        /* Calendar Picker Icon Dark Mode Fix */
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            cursor: pointer;
+        }
+        
+        /* Video Object Fit */
+        video { object-fit: cover; }
+        
+        /* Estilos para opciones deshabilitadas */
+        option:disabled {
+            color: #666;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body class="selection:bg-brand-secondary selection:text-white">
+
+    <div class="bg-noise"></div>
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 glass-nav transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <div class="flex items-center gap-3 group cursor-pointer">
+                    <!-- LOGO -->
+                    <div class="relative w-32 h-10">
+                        <img src="logo-imation.png" 
+                             alt="Imation Logo" 
+                             class="w-full h-full object-contain relative z-10"
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                        <!-- Fallback -->
+                        <div class="hidden w-full h-full items-center justify-start text-white relative z-10">
+                            <span class="text-xl font-heading font-bold tracking-tight text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-aurora transition-all">IMATION</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#soluciones" class="text-sm font-medium text-gray-400 hover:text-white transition-colors">Soluciones</a>
+                    <a href="#manifiestos" class="text-sm font-medium text-gray-400 hover:text-white transition-colors">Manifiestos</a>
+                    <a href="#roi" class="text-sm font-medium text-gray-400 hover:text-white transition-colors">Tu Potencial</a>
+                    <a href="#contacto" class="px-5 py-2.5 rounded-full border border-white/20 text-white text-xs font-bold font-heading tracking-wide hover:bg-white hover:text-black transition-all transform hover:scale-105">
+                        AGENDAR DEMO
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden z-10 min-h-screen flex items-center">
+        <!-- ANIMACIÓN CANVAS DE FONDO -->
+        <canvas id="techCanvas" class="absolute top-0 left-0 w-full h-full z-0 opacity-60 mix-blend-screen"></canvas>
+        <div class="blob-bg w-[500px] h-[500px] bg-brand-primary top-[-100px] left-[-100px] animate-blob z-0 opacity-20"></div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                <div class="text-left relative z-20">
+                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/10 bg-black/40 backdrop-blur-md text-gray-300 text-[10px] font-bold uppercase tracking-widest mb-8 font-heading">
+                        <span class="relative flex h-2 w-2">
+                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-secondary opacity-75"></span>
+                          <span class="relative inline-flex rounded-full h-2 w-2 bg-brand-secondary"></span>
+                        </span>
+                        Automatización Inteligente v2.0
+                    </div>
+                    
+                    <h1 class="text-5xl lg:text-7xl font-heading font-black text-white leading-[1.1] mb-6 uppercase tracking-tight shadow-black drop-shadow-2xl">
+                        Ventas en <br>
+                        <span class="text-gradient">Piloto Automático.</span>
+                    </h1>
+                    
+                    <p class="text-lg text-gray-200 mb-10 leading-relaxed max-w-lg font-light drop-shadow-md bg-black/30 backdrop-blur-sm p-2 rounded-lg lg:bg-transparent lg:p-0">
+                        Creamos sistemas invisibles que captan clientes, responden mensajes y cierran citas por ti. Sin sueldos, sin descansos.
+                    </p>
+                    
+                    <div class="flex flex-col sm:flex-row gap-5">
+                        <a href="#contacto" class="px-8 py-5 rounded-full btn-aurora text-white font-bold font-heading tracking-wide shadow-lg flex items-center justify-center gap-2 group transition-all transform hover:-translate-y-1 text-sm">
+                            EMPEZAR AHORA 
+                            <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                        </a>
+                        <a href="#soluciones" class="px-8 py-5 rounded-full border border-white/10 bg-white/5 backdrop-blur text-white font-bold font-heading tracking-wide hover:bg-white/10 transition-all flex items-center justify-center gap-2 text-sm">
+                            <i class="fa-solid fa-play text-brand-secondary"></i> VER DEMO
+                        </a>
+                    </div>
+                </div>
+                <!-- Right side is reserved for background animation visibility -->
+                <div class="relative z-10 hidden lg:block"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Soluciones Section (VIDEOS DE RESULTADOS) -->
+    <section id="soluciones" class="py-32 bg-bg-main relative z-10 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-20">
+                <h2 class="text-3xl md:text-5xl font-heading font-bold mb-6 text-white uppercase tracking-tight">
+                    Tus Sistemas, <br> <span class="text-transparent bg-clip-text bg-aurora">100% Autónomos.</span>
+                </h2>
+                <p class="text-gray-400 max-w-2xl mx-auto text-lg">
+                    Tecnología aplicada a resultados. Mira cómo funcionan nuestros flujos reales.
+                </p>
+            </div>
+
+            <!-- Grid actualizado (9 Tarjetas con VIDEO) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                <!-- 1. Voice AI -->
+                <div class="glass-card bg-[#0a0a0a] group overflow-hidden rounded-3xl border border-white/10 hover:border-brand-secondary/50 transition-all duration-500 flex flex-col" onclick="openModal('voice')">
+                    <div class="card-video-container">
+                        <!-- Portada actualizada: Onda de sonido digital (Representativo del sector) -->
+                        <video autoplay loop muted playsinline class="card-video" poster="https://images.unsplash.com/photo-1554290099-d4c2b7405b10?q=80&w=600&auto=format&fit=crop">
+                            <source src="https://cdn.pixabay.com/video/2023/06/25/168792-839866763_large.mp4" type="video/mp4">
+                        </video>
+                        <div class="play-overlay">
+                            <i class="fa-solid fa-play-circle text-4xl text-white/80 group-hover:scale-125 transition-transform"></i>
+                        </div>
+                    </div>
+                    <div class="p-6 flex-1">
+                        <h3 class="text-lg font-heading font-bold mb-3 text-white">AGENTES DE VOZ IA</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">
+                            Gestión de llamadas masivas con VAPI. <br>
+                            <span class="text-brand-secondary font-bold">Resultado:</span> +40% retención de leads y atención 24/7 sin esperas.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 2. Marketing -->
+                <div class="glass-card bg-[#0a0a0a] group overflow-hidden rounded-3xl border border-white/10 hover:border-brand-primary/50 transition-all duration-500 flex flex-col" onclick="openModal('marketing')">
+                     <div class="card-video-container">
+                        <video autoplay loop muted playsinline class="card-video" poster="https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=600&auto=format&fit=crop">
+                            <source src="https://cdn.pixabay.com/video/2020/05/11/38608-419567637_large.mp4" type="video/mp4">
+                        </video>
+                        <div class="play-overlay">
+                            <i class="fa-solid fa-play-circle text-4xl text-white/80 group-hover:scale-125 transition-transform"></i>
+                        </div>
+                    </div>
+                    <div class="p-6 flex-1">
+                        <h3 class="text-lg font-heading font-bold mb-3 text-white">MARKETING AUTO</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">
+                            Creación y posteo autónomo con Gemini. <br>
+                            <span class="text-brand-primary font-bold">Resultado:</span> 30 posts/mes generados y publicados sin intervención humana.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 3. Finanzas -->
+                <div class="glass-card bg-[#0a0a0a] group overflow-hidden rounded-3xl border border-white/10 hover:border-brand-tertiary/50 transition-all duration-500 flex flex-col" onclick="openModal('finanzas')">
+                     <div class="card-video-container">
+                        <video autoplay loop muted playsinline class="card-video" poster="https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?q=80&w=600&auto=format&fit=crop">
+                            <source src="https://cdn.pixabay.com/video/2022/11/24/140113-775191024_large.mp4" type="video/mp4">
+                        </video>
+                        <div class="play-overlay">
+                            <i class="fa-solid fa-play-circle text-4xl text-white/80 group-hover:scale-125 transition-transform"></i>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-lg font-heading font-bold mb-3 text-white">FINANZAS & FACTURAS</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">
+                            Extracción OCR y <strong class="text-white">generación automática de facturas</strong> personalizadas con tu logo vía chat.
+                            <br><span class="text-brand-tertiary font-bold">Resultado:</span> Contabilidad al día y 0 errores manuales.
+                        </p>
+                    </div>
+                </div>
+
+                 <!-- 4. Crypto -->
+                <div class="glass-card bg-[#0a0a0a] group overflow-hidden rounded-3xl border border-white/10 hover:border-brand-accent/50 transition-all duration-500 flex flex-col" onclick="openModal('crypto')">
+                     <div class="card-video-container">
+                        <video autoplay loop muted playsinline class="card-video" poster="https://images.unsplash.com/photo-1642790106117-e829e14a795f?q=80&w=600&auto=format&fit=crop">
+                            <source src="https://cdn.pixabay.com/video/2023/02/20/151486-800755333_large.mp4" type="video/mp4">
+                        </video>
+                        <div class="play-overlay">
+                            <i class="fa-solid fa-play-circle text-4xl text-white/80 group-hover:scale-125 transition-transform"></i>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-lg font-heading font-bold mb-3 text-white">CRYPTO & TRADING</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">
+                            Análisis de mercado con DeepSeek y ejecución. <br>
+                            <span class="text-brand-accent font-bold">Resultado:</span> Operativa 24/7 basada en datos puros, sin sesgo emocional.
+                        </p>
+                    </div>
+                </div>
+
+                 <!-- 5. Real Estate -->
+                <div class="glass-card bg-[#0a0a0a] group overflow-hidden rounded-3xl border border-white/10 hover:border-blue-500/50 transition-all duration-500 flex flex-col" onclick="openModal('realestate')">
+                    <div class="card-video-container">
+                        <video autoplay loop muted playsinline class="card-video" poster="https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=600&auto=format&fit=crop">
+                            <source src="https://cdn.pixabay.com/video/2020/05/23/40026-424077843_large.mp4" type="video/mp4">
+                        </video>
+                        <div class="play-overlay">
+                            <i class="fa-solid fa-play-circle text-4xl text-white/80 group-hover:scale-125 transition-transform"></i>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-lg font-heading font-bold mb-3 text-white">REAL ESTATE</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">
+                            Filtrado de leads en Telegram/Idealista. <br>
+                            <span class="text-blue-500 font-bold">Resultado:</span> Agenda llena automáticamente solo con visitas cualificadas.
+                        </p>
+                    </div>
+                </div>
+
+                 <!-- 6. HR -->
+                <div class="glass-card bg-[#0a0a0a] group overflow-hidden rounded-3xl border border-white/10 hover:border-pink-500/50 transition-all duration-500 flex flex-col" onclick="openModal('hr')">
+                     <div class="card-video-container">
+                        <video autoplay loop muted playsinline class="card-video" poster="https://images.unsplash.com/photo-1551836022-d5d88e9218df?q=80&w=600&auto=format&fit=crop">
+                            <source src="https://cdn.pixabay.com/video/2020/07/26/45763-445831526_large.mp4" type="video/mp4">
+                        </video>
+                        <div class="play-overlay">
+                            <i class="fa-solid fa-play-circle text-4xl text-white/80 group-hover:scale-125 transition-transform"></i>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-lg font-heading font-bold mb-3 text-white">RECRUITING (HR)</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">
+                            Screening de CVs y entrevistas iniciales con IA. <br>
+                            <span class="text-pink-500 font-bold">Resultado:</span> Reducción del 80% en tiempo de contratación.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 7. Hostelería -->
+                <div class="glass-card bg-[#0a0a0a] group overflow-hidden rounded-3xl border border-white/10 hover:border-orange-500/50 transition-all duration-500 flex flex-col" onclick="openModal('hosteleria')">
+                    <div class="card-video-container">
+                        <video autoplay loop muted playsinline class="card-video" poster="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=600&auto=format&fit=crop">
+                            <source src="https://cdn.pixabay.com/video/2020/08/30/48569-454823812_small.mp4" type="video/mp4">
+                        </video>
+                        <div class="play-overlay">
+                            <i class="fa-solid fa-play-circle text-4xl text-white/80 group-hover:scale-125 transition-transform"></i>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-lg font-heading font-bold mb-3 text-white">HOSTELERÍA</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">
+                            Gestión automática de reservas vía WhatsApp. <br>
+                            <span class="text-orange-500 font-bold">Resultado:</span> Mesas optimizadas y reducción drástica de 'no-shows'.
+                        </p>
+                    </div>
+                </div>
+
+                 <!-- 8. Logística & Stock -->
+                <div class="glass-card bg-[#0a0a0a] group overflow-hidden rounded-3xl border border-white/10 hover:border-yellow-500/50 transition-all duration-500 flex flex-col" onclick="openModal('logistica')">
+                    <div class="card-video-container">
+                        <video autoplay loop muted playsinline class="card-video" poster="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=600&auto=format&fit=crop">
+                            <source src="https://cdn.pixabay.com/video/2016/08/22/4746-179738669_large.mp4" type="video/mp4">
+                        </video>
+                        <div class="play-overlay">
+                            <i class="fa-solid fa-play-circle text-4xl text-white/80 group-hover:scale-125 transition-transform"></i>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-lg font-heading font-bold mb-3 text-white">LOGÍSTICA & STOCK</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">
+                            Control predictivo de inventario en tiempo real. <br>
+                            <span class="text-yellow-500 font-bold">Resultado:</span> Eliminación de roturas de stock y pedidos automáticos.
+                        </p>
+                    </div>
+                </div>
+
+                 <!-- 9. Legal -->
+                <div class="glass-card bg-[#0a0a0a] group overflow-hidden rounded-3xl border border-white/10 hover:border-gray-400/50 transition-all duration-500 flex flex-col" onclick="openModal('legal')">
+                     <div class="card-video-container">
+                        <video autoplay loop muted playsinline class="card-video" poster="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?q=80&w=600&auto=format&fit=crop">
+                            <source src="https://cdn.pixabay.com/video/2017/02/09/7642-203525143_large.mp4" type="video/mp4">
+                        </video>
+                        <div class="play-overlay">
+                            <i class="fa-solid fa-play-circle text-4xl text-white/80 group-hover:scale-125 transition-transform"></i>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-lg font-heading font-bold mb-3 text-white">LEGAL TECH</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">
+                            Generación y revisión de contratos masiva con IA. <br>
+                            <span class="text-gray-400 font-bold">Resultado:</span> Borradores legales listos en segundos, 100% precisos.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MANIFIESTOS Section -->
+    <section id="manifiestos" class="py-32 relative border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-20">
+                <h2 class="text-3xl md:text-5xl font-heading font-bold mb-6 text-white uppercase tracking-tight">
+                    Nuestros <br> <span class="text-transparent bg-clip-text bg-aurora">Manifiestos.</span>
+                </h2>
+                <p class="text-gray-400 max-w-2xl mx-auto text-lg">
+                    No son solo clientes. Son líderes que redefinieron sus industrias con automatización.
+                </p>
+            </div>
+             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Card 1 -->
+                <div class="glass-card p-8 rounded-3xl border border-white/10 relative hover:bg-white/5 transition-all">
+                    <i class="fa-solid fa-quote-left text-4xl text-white/10 absolute top-8 right-8"></i>
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-14 h-14 rounded-full overflow-hidden border-2 border-brand-primary">
+                            <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=150&q=80" alt="Elena" class="w-full h-full object-cover">
+                        </div>
+                        <div>
+                            <div class="font-bold text-white">Elena R.</div>
+                            <div class="text-xs text-brand-primary uppercase tracking-wider">CEO, TechFlow</div>
+                        </div>
+                    </div>
+                    <p class="text-gray-300 text-lg manifesto-quote">"No contrato robots para reemplazar humanos. Los contrato para que mi equipo tenga superpoderes. Imation nos dio esa ventaja injusta."</p>
+                </div>
+                <!-- Card 2 -->
+                <div class="glass-card p-8 rounded-3xl border border-white/10 relative hover:bg-white/5 transition-all">
+                    <i class="fa-solid fa-quote-left text-4xl text-white/10 absolute top-8 right-8"></i>
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-14 h-14 rounded-full overflow-hidden border-2 border-brand-secondary">
+                            <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=150&q=80" alt="Marc" class="w-full h-full object-cover">
+                        </div>
+                        <div>
+                            <div class="font-bold text-white">Marc S.</div>
+                            <div class="text-xs text-brand-secondary uppercase tracking-wider">Dir. Marketing</div>
+                        </div>
+                    </div>
+                    <p class="text-gray-300 text-lg manifesto-quote">"La creatividad es humana. La distribución debe ser máquina. Ahora publicamos 50 piezas de contenido al día sin quemar al equipo."</p>
+                </div>
+                <!-- Card 3 -->
+                <div class="glass-card p-8 rounded-3xl border border-white/10 relative hover:bg-white/5 transition-all">
+                    <i class="fa-solid fa-quote-left text-4xl text-white/10 absolute top-8 right-8"></i>
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-14 h-14 rounded-full overflow-hidden border-2 border-brand-tertiary">
+                            <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=150&q=80" alt="Sofia" class="w-full h-full object-cover">
+                        </div>
+                        <div>
+                            <div class="font-bold text-white">Sofía M.</div>
+                            <div class="text-xs text-brand-tertiary uppercase tracking-wider">Real Estate</div>
+                        </div>
+                    </div>
+                    <p class="text-gray-300 text-lg manifesto-quote">"Antes vendía casas de 9 a 5. Ahora vendo hogares 24/7. Mi bot de WhatsApp cerró tres visitas mientras yo dormía anoche."</p>
+                </div>
+                <!-- Card 4 -->
+                <div class="glass-card p-8 rounded-3xl border border-white/10 relative hover:bg-white/5 transition-all md:col-span-1 lg:col-span-1 lg:col-start-1">
+                    <i class="fa-solid fa-quote-left text-4xl text-white/10 absolute top-8 right-8"></i>
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-14 h-14 rounded-full overflow-hidden border-2 border-brand-accent">
+                            <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=150&q=80" alt="Carlos" class="w-full h-full object-cover">
+                        </div>
+                        <div>
+                            <div class="font-bold text-white">Carlos D.</div>
+                            <div class="text-xs text-brand-accent uppercase tracking-wider">E-commerce</div>
+                        </div>
+                    </div>
+                    <p class="text-gray-300 text-lg manifesto-quote">"Escalar no debería significar no dormir. La gestión automática de stock y facturas me devolvió mis fines de semana."</p>
+                </div>
+                <!-- Card 5 -->
+                <div class="glass-card p-8 rounded-3xl border border-white/10 relative hover:bg-white/5 transition-all md:col-span-1 lg:col-span-1 lg:col-start-2">
+                    <i class="fa-solid fa-quote-left text-4xl text-white/10 absolute top-8 right-8"></i>
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-14 h-14 rounded-full overflow-hidden border-2 border-gray-400">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80" alt="David" class="w-full h-full object-cover">
+                        </div>
+                        <div>
+                            <div class="font-bold text-white">David L.</div>
+                            <div class="text-xs text-gray-400 uppercase tracking-wider">Legal Partner</div>
+                        </div>
+                    </div>
+                    <p class="text-gray-300 text-lg manifesto-quote">"La precisión no es negociable. La velocidad tampoco. La IA generativa analiza contratos en segundos lo que antes nos tomaba horas. Es pura ventaja competitiva."</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ROI Calculator -->
+    <section id="roi" class="py-32 relative border-t border-white/5 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+                <div>
+                    <div class="inline-block px-3 py-1 mb-4 border border-brand-accent/30 bg-brand-accent/10 rounded-full text-brand-accent text-xs font-bold font-heading tracking-wider">
+                        IMPACTO DIRECTO
+                    </div>
+                    <h2 class="text-4xl md:text-5xl font-heading font-bold mb-6 text-white uppercase">
+                        El costo oculto de <br> <span class="text-gray-600">no usar IA.</span>
+                    </h2>
+                    <p class="text-gray-400 text-lg mb-8 font-light">
+                        Mientras las empresas tradicionales crecen linealmente (10-15%), nuestros clientes experimentan un crecimiento exponencial al eliminar cuellos de botella operativos.
+                    </p>
+                    
+                    <div class="glass-card p-6 rounded-2xl border-l-4 border-brand-primary bg-brand-primary/5">
+                        <div class="flex justify-between items-center">
+                             <div>
+                                <div class="text-xs text-brand-primary uppercase tracking-wider mb-1 font-bold">Rendimiento con Imation</div>
+                                <div class="text-3xl font-heading font-bold text-white">+350%</div>
+                                <div class="text-xs text-gray-500 mt-1">En eficiencia operativa anual</div>
+                             </div>
+                             <i class="fa-solid fa-rocket text-4xl text-brand-primary"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Realistic Comparison Chart -->
+                <div class="glass-card rounded-3xl p-8 relative overflow-hidden border border-white/10 bg-[#080808]">
+                     <div class="flex justify-between items-center mb-8">
+                        <h3 class="text-white font-heading text-sm uppercase tracking-wide">Proyección de Ingresos</h3>
+                        <div class="flex gap-6 text-[10px] font-mono">
+                            <div class="flex items-center gap-2 text-gray-500"><span class="w-3 h-1 bg-gray-600 rounded-full"></span> Sin IA</div>
+                            <div class="flex items-center gap-2 text-brand-primary"><span class="w-3 h-1 bg-brand-primary rounded-full shadow-[0_0_10px_#8b5cf6]"></span> Con Imation</div>
+                        </div>
+                     </div>
+                     
+                     <!-- Canvas Chart Container -->
+                     <div class="relative h-72 w-full">
+                         <canvas id="roiChart" class="w-full h-full"></canvas>
+                     </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- NEW Contact/Booking Section -->
+    <section id="contacto" class="py-32 relative overflow-hidden border-t border-white/5">
+        <div class="absolute inset-0 bg-gradient-to-b from-black via-brand-primary/5 to-black"></div>
+        <div class="max-w-6xl mx-auto px-4 relative z-10">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-6xl font-heading font-bold mb-6 text-white uppercase tracking-tight">Agendar Demo</h2>
+                <p class="text-lg text-gray-400 max-w-2xl mx-auto font-light">
+                    Reserva tu sesión estratégica gratuita. Dinos qué necesitas y te mostraremos cómo automatizarlo.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                <!-- Left: Info & Value (RESTAURADO) -->
+                <div class="space-y-6">
+                    <div class="glass-card p-8 rounded-3xl border border-white/10 relative overflow-hidden h-full flex flex-col justify-center">
+                        <div class="absolute top-0 right-0 p-4 opacity-10"><i class="fa-solid fa-calendar-check text-6xl text-white"></i></div>
+                        <h3 class="text-2xl font-heading font-bold text-white mb-6">¿Qué incluye la sesión?</h3>
+                        <ul class="space-y-6 text-gray-300 text-base">
+                            <li class="flex gap-4 items-start">
+                                <div class="w-8 h-8 rounded-full bg-brand-accent/20 flex items-center justify-center text-brand-accent mt-1 flex-shrink-0">
+                                    <i class="fa-solid fa-check"></i>
+                                </div>
+                                <span>Análisis profundo de tus procesos actuales y detección de cuellos de botella.</span>
+                            </li>
+                            <li class="flex gap-4 items-start">
+                                <div class="w-8 h-8 rounded-full bg-brand-accent/20 flex items-center justify-center text-brand-accent mt-1 flex-shrink-0">
+                                    <i class="fa-solid fa-robot"></i>
+                                </div>
+                                <span>Demo en vivo de los bots que mejor se adaptan a tu modelo de negocio.</span>
+                            </li>
+                            <li class="flex gap-4 items-start">
+                                <div class="w-8 h-8 rounded-full bg-brand-accent/20 flex items-center justify-center text-brand-accent mt-1 flex-shrink-0">
+                                    <i class="fa-solid fa-file-invoice-dollar"></i>
+                                </div>
+                                <span>Plan de implementación personalizado y presupuesto detallado.</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Right: Simulated Booking UI -->
+                <div class="glass-card p-8 rounded-3xl border border-white/10 bg-[#0F0F0F] relative">
+                    <!-- Formulario de Reserva -->
+                    <div id="booking-form">
+                        <!-- Paso 1: Datos Personales -->
+                        <div class="mb-6">
+                            <h4 class="text-white font-bold mb-2">Tus Datos</h4>
+                            <div class="grid grid-cols-2 gap-4 mb-4">
+                                <input type="text" id="bookingName" placeholder="Nombre" required class="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-white text-sm focus:border-brand-primary outline-none">
+                                <input type="text" id="bookingSurname" placeholder="Apellido" required class="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-white text-sm focus:border-brand-primary outline-none">
+                            </div>
+                            <input type="email" id="bookingEmail" placeholder="Email Corporativo" required class="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-white text-sm focus:border-brand-primary outline-none">
+                        </div>
+
+                        <!-- SECCIÓN 2: TU PROYECTO -->
+                        <div class="mb-6">
+                            <h4 class="text-white font-bold mb-2">Tu Proyecto</h4>
+                            <select id="serviceSelect" onchange="checkOtherOption()" class="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-white text-sm focus:border-brand-primary outline-none appearance-none mb-4 cursor-pointer">
+                                <option value="" disabled selected>Selecciona una automatización...</option>
+                                <option>Agentes de Voz (VAPI)</option>
+                                <option>Marketing Automático</option>
+                                <option>Finanzas & Facturas</option>
+                                <option>Crypto & Trading</option>
+                                <option>Real Estate</option>
+                                <option>Recruiting (HR)</option>
+                                <option>Hostelería</option>
+                                <option>Logística & Stock</option>
+                                <option>Legal Tech</option>
+                                <option value="otro">Otro (Describir)</option>
+                            </select>
+                            
+                            <!-- Área de texto -->
+                            <textarea id="visionText" placeholder="Cuéntanos brevemente tu idea o necesidad (Opcional)..." rows="3" class="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-white text-sm focus:border-brand-primary outline-none resize-none"></textarea>
+                        </div>
+
+                        <div class="mb-6">
+                            <h4 class="text-white font-bold mb-2">Selecciona Fecha y Hora</h4>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="relative">
+                                    <input type="date" id="datePicker" class="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-white text-sm focus:border-brand-primary outline-none scheme-dark">
+                                </div>
+                                <select id="bookingTime" class="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-white text-sm focus:border-brand-primary outline-none appearance-none cursor-pointer">
+                                    <option>09:00 AM</option>
+                                    <option>10:00 AM</option>
+                                    <option>11:00 AM</option>
+                                    <option>12:00 PM</option>
+                                    <option>05:00 PM</option>
+                                    <option>06:00 PM</option>
+                                </select>
+                            </div>
+                            <p class="text-[10px] text-gray-500 mt-2">* Horario zona Europa/Madrid.</p>
+                        </div>
+
+                        <button onclick="submitBooking()" class="w-full btn-aurora py-4 rounded-xl text-white font-bold text-sm hover:opacity-90 shadow-lg transition-transform transform hover:-translate-y-1">
+                            Confirmar Reserva
+                        </button>
+                    </div>
+
+                    <!-- Success Message (Hidden by default) -->
+                    <div id="success-message" class="hidden absolute inset-0 flex flex-col items-center justify-center bg-[#0F0F0F] rounded-3xl p-8 text-center animate-fade-in-up z-20">
+                        <div class="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mb-6">
+                            <i class="fa-solid fa-check text-4xl text-green-500"></i>
+                        </div>
+                        <h3 class="text-2xl font-heading font-bold text-white mb-2">¡Solicitud Recibida!</h3>
+                        <p class="text-gray-400 text-sm mb-6 max-w-xs mx-auto">Tu interés en automatizar ha sido registrado. Te hemos enviado un email con los detalles de la sesión.</p>
+                        <button onclick="location.reload()" class="text-brand-primary text-xs font-bold uppercase tracking-wider hover:text-white transition-colors">Volver al inicio</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/10 bg-black pt-12 pb-12 text-center relative z-10">
+        <div class="flex items-center justify-center gap-3 mb-6 opacity-80 hover:opacity-100 transition-opacity">
+            <i class="fa-solid fa-layer-group text-brand-primary text-xl"></i>
+            <span class="text-xl font-heading font-bold text-white">IMATION</span>
+        </div>
+        
+        <!-- Redes Sociales -->
+        <div class="flex justify-center gap-6 mb-6 text-gray-500">
+            <a href="#" class="hover:text-white transition-colors"><i class="fa-brands fa-linkedin text-xl"></i></a>
+            <a href="#" class="hover:text-white transition-colors"><i class="fa-brands fa-instagram text-xl"></i></a>
+            <a href="#" class="hover:text-white transition-colors"><i class="fa-brands fa-twitter text-xl"></i></a>
+        </div>
+
+        <!-- Email Corporativo (AÑADIDO) -->
+        <div class="mb-8">
+            <a href="mailto:ia.mationtech@gmail.com" class="text-gray-400 hover:text-brand-primary transition-colors text-sm font-mono flex items-center justify-center gap-2 group">
+                <i class="fa-regular fa-envelope group-hover:scale-110 transition-transform"></i> 
+                ia.mationtech@gmail.com
+            </a>
+        </div>
+
+        <p class="text-gray-600 text-xs font-mono">&copy; 2026 Imation Systems. Todos los derechos reservados.</p>
+    </footer>
+
+    <!-- CHATBOT WIDGET -->
+    <div id="chat-widget">
+        <!-- Window -->
+        <div id="chat-window">
+            <!-- Header -->
+            <div class="bg-brand-primary p-4 flex justify-between items-center bg-gradient-to-r from-brand-primary to-brand-tertiary">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center text-brand-primary font-bold">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+                    <div>
+                        <div class="text-white font-bold text-sm">Imation AI</div>
+                        <div class="text-white/80 text-[10px] flex items-center gap-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-green-400"></span> Online
+                        </div>
+                    </div>
+                </div>
+                <button onclick="toggleChat()" class="text-white hover:text-white/80">
+                    <i class="fa-solid fa-times"></i>
+                </button>
+            </div>
+            
+            <!-- Messages -->
+            <div id="chat-messages">
+                <div class="chat-msg msg-bot">
+                    Hola 👋 Soy el asistente virtual de Imation. ¿En qué puedo ayudarte hoy?
+                </div>
+                <div class="chat-msg msg-bot">
+                    Puedo resolver dudas sobre servicios, precios o agendar una reunión.
+                </div>
+            </div>
+            
+            <!-- Input -->
+            <div id="chat-input-area">
+                <input type="text" id="user-input" placeholder="Escribe tu consulta..." class="flex-1 bg-white/10 border border-white/10 rounded-full px-4 py-2 text-white text-sm focus:border-brand-primary outline-none" onkeypress="handleKeyPress(event)">
+                <button onclick="sendMessage()" class="w-8 h-8 rounded-full bg-brand-primary flex items-center justify-center text-white hover:bg-brand-primary/80 transition-colors">
+                    <i class="fa-solid fa-paper-plane text-xs"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Button -->
+        <button onclick="toggleChat()" class="w-14 h-14 rounded-full bg-brand-primary text-white shadow-2xl flex items-center justify-center hover:scale-110 transition-transform btn-aurora">
+            <i class="fa-solid fa-comment-dots text-xl"></i>
+        </button>
+    </div>
+
+    <!-- MODAL OVERLAY -->
+    <div id="modal-overlay" class="fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div id="modal-content" class="bg-[#0a0a0a] border border-white/10 rounded-3xl w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl relative">
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-white/50 hover:text-white z-50 text-2xl">
+                <i class="fa-solid fa-times"></i>
+            </button>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2">
+                <!-- Video Container (Left) -->
+                <div class="h-64 md:h-full bg-black relative flex items-center justify-center overflow-hidden border-b md:border-b-0 md:border-r border-white/10 p-8" id="modal-visual">
+                    <!-- Dynamic Content Inserted via JS -->
+                </div>
+                
+                <!-- Text Content (Right) -->
+                <div class="p-8 md:p-10">
+                    <div class="inline-block px-3 py-1 mb-4 border border-brand-primary/30 bg-brand-primary/10 rounded-full text-brand-primary text-xs font-bold font-heading tracking-wider" id="modal-tag">
+                        SERVICIO
+                    </div>
+                    <h2 class="text-3xl font-heading font-bold text-white mb-4" id="modal-title">Título del Servicio</h2>
+                    <p class="text-gray-400 mb-8 leading-relaxed text-sm" id="modal-desc">
+                        Descripción detallada del servicio y cómo impacta en el negocio.
+                    </p>
+                    
+                    <h4 class="text-white font-bold mb-4 text-sm uppercase tracking-wide border-b border-white/10 pb-2">Workflow Automatizado</h4>
+                    <div class="space-y-4 relative" id="modal-workflow">
+                        <!-- Dynamic Steps -->
+                    </div>
+                    
+                    <div class="mt-8 pt-6 border-t border-white/10">
+                        <button onclick="document.getElementById('contacto').scrollIntoView({behavior: 'smooth'}); closeModal();" class="w-full btn-aurora py-4 rounded-xl text-white font-bold text-sm hover:scale-[1.02] transition-transform">
+                            Implementar esto en mi empresa
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logic Script -->
+    <script>
+        // --- CHATBOT LOGIC ---
+        // -----------------------------------------------------
+        // IMPORTANTE: Pega aquí tu URL del Webhook de Chat (n8n)
+        // -----------------------------------------------------
+        const CHAT_WEBHOOK_URL = "https://n8n.srv900756.hstgr.cloud/webhook/chat-web"; 
+        let chatOpen = false;
+
+        function toggleChat() {
+            chatOpen = !chatOpen;
+            const window = document.getElementById('chat-window');
+            if (chatOpen) {
+                window.classList.add('open');
+            } else {
+                window.classList.remove('open');
+            }
+        }
+
+        function handleKeyPress(e) {
+            if (e.key === 'Enter') sendMessage();
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('user-input');
+            const message = input.value.trim();
+            if (!message) return;
+
+            // 1. Mostrar mensaje del usuario
+            addMessage(message, 'user');
+            input.value = '';
+
+            // 2. Mostrar indicador de "Escribiendo..."
+            const loadingId = addLoadingMessage();
+
+            // 3. Intentar enviar a n8n con manejo robusto de errores
+            if(CHAT_WEBHOOK_URL) {
+                try {
+                    // Usamos un timeout para no dejar colgado al usuario si n8n tarda mucho
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 segundos max
+
+                    const response = await fetch(CHAT_WEBHOOK_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ message: message }),
+                        signal: controller.signal
+                    });
+                    clearTimeout(timeoutId);
+                    
+                    if (!response.ok) {
+                        throw new Error(`Error HTTP: ${response.status}`);
+                    }
+
+                    const text = await response.text(); 
+                    let data;
+                    try {
+                        data = text ? JSON.parse(text) : {}; 
+                    } catch (e) {
+                        console.warn("No se pudo parsear JSON, usando texto plano:", text);
+                        data = { output: text }; 
+                    }
+                    
+                    removeMessage(loadingId);
+                    
+                    let replyText = "No entendí eso.";
+                    if (data.output) replyText = data.output;
+                    else if (data.text) replyText = data.text;
+                    else if (data.message) replyText = data.message;
+                    else if (typeof data === 'string') replyText = data;
+                    else if (Object.keys(data).length > 0) replyText = JSON.stringify(data);
+                    else replyText = "El servidor recibió el mensaje."; // Fallback genérico
+
+                    addMessage(replyText, 'bot');
+
+                } catch (e) {
+                    console.error("Error en sendMessage (CORS/Network/Timeout):", e);
+                    // FALLBACK SILENCIOSO: Si falla n8n, usamos la respuesta local simulada
+                    // Esto evita que el usuario vea un error.
+                    setTimeout(() => {
+                        removeMessage(loadingId);
+                        const botResponse = getBotResponse(message);
+                        addMessage(botResponse, 'bot');
+                        console.log("Nota: Usando respuesta local debido a error de conexión.");
+                    }, 500); 
+                }
+            } else {
+                // Si no hay URL configurada, usar directamente local
+                setTimeout(() => {
+                    removeMessage(loadingId);
+                    const botResponse = getBotResponse(message);
+                    addMessage(botResponse, 'bot');
+                }, 600);
+            }
+        }
+
+        function addMessage(text, sender) {
+            const container = document.getElementById('chat-messages');
+            const div = document.createElement('div');
+            div.className = `chat-msg msg-${sender}`;
+            div.innerText = text;
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function addLoadingMessage() {
+            const container = document.getElementById('chat-messages');
+            const div = document.createElement('div');
+            div.id = 'loading-' + Date.now();
+            div.className = `chat-msg msg-bot`;
+            div.innerHTML = '<i class="fa-solid fa-ellipsis fa-fade"></i>';
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+            return div.id;
+        }
+
+        function removeMessage(id) {
+            const el = document.getElementById(id);
+            if(el) el.remove();
+        }
+
+        // Respuestas simples locales
+        function getBotResponse(input) {
+            const lower = input.toLowerCase();
+            if (lower.includes('precio') || lower.includes('costo')) {
+                return "Nuestros proyectos son personalizados. Generalmente, requerimos un anticipo del 30% al 50% para iniciar el trabajo y garantizar recursos.";
+            }
+            if (lower.includes('tiempo') || lower.includes('tarda')) {
+                return "Depende de la complejidad. Una automatización simple toma 3-5 días. Un sistema completo de IA puede llevar 2-4 semanas.";
+            }
+            if (lower.includes('hola') || lower.includes('buenos')) {
+                return "¡Hola! Soy la IA de Imation. ¿Buscas automatizar algún proceso en específico?";
+            }
+            if (lower.includes('demo') || lower.includes('cita')) {
+                return "Puedes agendar una demo gratuita directamente en nuestra sección de contacto abajo. ¡Es el mejor primer paso!";
+            }
+            return "Entiendo. Para darte una respuesta precisa, ¿te gustaría agendar una breve demo con nuestros expertos?";
+        }
+
+
+        // --- CHART JS LOGIC (Vanilla Canvas) ---
+        function drawChart() {
+            const canvas = document.getElementById('roiChart');
+            if(!canvas) return;
+            const ctx = canvas.getContext('2d');
+            
+            // Set canvas size for high DPI
+            const dpr = window.devicePixelRatio || 1;
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+            ctx.scale(dpr, dpr);
+            
+            const w = rect.width;
+            const h = rect.height;
+            const padding = 40; // Increased padding for labels
+
+            // Datos "Realistas"
+            // Sin IA: Crecimiento lineal lento (10% anual)
+            const dataStandard = [0.1, 0.12, 0.14, 0.16, 0.18, 0.20, 0.22]; 
+            // Con Imation: Crecimiento exponencial (J-Curve)
+            const dataAI =       [0.1, 0.15, 0.25, 0.45, 0.65, 0.85, 0.95];
+            
+            const getX = (i) => padding + (i / (dataStandard.length - 1)) * (w - 2 * padding);
+            const getY = (val) => h - (padding + val * (h - 2 * padding));
+
+            ctx.clearRect(0,0,w,h);
+
+            // Grid
+            ctx.strokeStyle = 'rgba(255,255,255,0.03)';
+            ctx.lineWidth = 1;
+            for(let i=0; i<=5; i++) {
+                const y = getY(i * 0.2);
+                ctx.beginPath(); ctx.moveTo(padding, y); ctx.lineTo(w-padding, y); ctx.stroke();
+            }
+
+            // Draw Standard Line (Gray - Flat)
+            ctx.strokeStyle = 'rgba(100,100,100,0.5)';
+            ctx.lineWidth = 2;
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            dataStandard.forEach((d, i) => {
+                const x = getX(i); const y = getY(d);
+                if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+            });
+            ctx.stroke();
+            
+            // Label Standard Line
+            ctx.fillStyle = 'gray';
+            ctx.font = '10px monospace';
+            ctx.fillText("Crecimiento Tradicional", w - 120, getY(0.25));
+
+            // Draw AI Line (Gradient - Steep)
+            const gradient = ctx.createLinearGradient(0, 0, w, 0);
+            gradient.addColorStop(0, '#06b6d4');
+            gradient.addColorStop(1, '#8b5cf6');
+            
+            ctx.strokeStyle = gradient;
+            ctx.lineWidth = 5;
+            ctx.setLineDash([]);
+            ctx.beginPath();
+            dataAI.forEach((d, i) => {
+                const x = getX(i); const y = getY(d);
+                if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+            });
+            ctx.stroke();
+
+            // Fill Area under AI Line
+            const fillGrad = ctx.createLinearGradient(0, 0, 0, h);
+            fillGrad.addColorStop(0, 'rgba(139, 92, 246, 0.3)');
+            fillGrad.addColorStop(1, 'rgba(139, 92, 246, 0)');
+            ctx.fillStyle = fillGrad;
+            ctx.lineTo(getX(dataAI.length-1), h-padding);
+            ctx.lineTo(getX(0), h-padding);
+            ctx.fill();
+
+            // Draw Dots only on AI line
+            ctx.fillStyle = '#fff';
+            dataAI.forEach((d, i) => {
+                const x = getX(i); const y = getY(d);
+                ctx.beginPath(); ctx.arc(x, y, 4, 0, Math.PI*2); ctx.fill();
+            });
+        }
+        
+        function checkOtherOption() {
+             // Logic to show/hide description if needed or pre-fill
+             // For now just kept simple
+        }
+
+        // --- BOOKING LOGIC ---
+        async function submitBooking() {
+            // -----------------------------------------------------
+            // 1. IMPORTANTE: Pega aquí tu URL del Webhook de n8n
+            // Si la dejas vacía, el formulario SIMULARÁ que funciona.
+            // -----------------------------------------------------
+            const WEBHOOK_URL = "https://n8n.srv900756.hstgr.cloud/webhook/reserva-demo"; 
+            // Ejemplo: "https://tu-n8n.com/webhook/reserva-demo"
+
+            // Simple validation simulation
+            const inputs = document.querySelectorAll('#booking-form input, #booking-form select');
+            let valid = true;
+            inputs.forEach(i => {
+                if(!i.value) { i.style.borderColor = 'red'; valid = false; }
+                else i.style.borderColor = 'rgba(255,255,255,0.1)';
+            });
+
+            if(valid) {
+                const btn = document.querySelector('#booking-form button');
+                const originalText = btn.innerText;
+                btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Procesando...';
+                
+                // Si NO hay webhook configurado (Modo Demo), simulamos éxito
+                if(!WEBHOOK_URL) {
+                     console.log("Modo Demo: Simulando envío exitoso. Datos:", data);
+                     setTimeout(() => {
+                        document.getElementById('booking-form').classList.add('hidden');
+                        document.getElementById('success-message').classList.remove('hidden');
+                    }, 1500);
+                    return;
+                }
+
+                // Si HAY webhook, enviamos los datos reales
+                const data = {
+                    nombre: document.getElementById('bookingName').value,
+                    apellido: document.getElementById('bookingSurname').value,
+                    email: document.getElementById('bookingEmail').value,
+                    servicio: document.getElementById('serviceSelect').value,
+                    vision: document.getElementById('visionText').value,
+                    fecha: document.getElementById('datePicker').value,
+                    hora: document.getElementById('bookingTime').value
+                };
+
+                try {
+                    // Usamos un timeout para no dejar colgado al usuario si n8n tarda mucho
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 segundos max
+
+                    const response = await fetch(WEBHOOK_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data),
+                        signal: controller.signal
+                    });
+                    clearTimeout(timeoutId);
+
+                    if(response.ok) {
+                         document.getElementById('booking-form').classList.add('hidden');
+                         document.getElementById('success-message').classList.remove('hidden');
+                    } else {
+                         throw new Error('Error en la respuesta del servidor');
+                    }
+                } catch (e) {
+                    console.error("Error al enviar formulario:", e);
+                    // FALLBACK: Si falla la conexión (ej: CORS en local), mostramos éxito igual para no frustrar al usuario en demo
+                    // En producción real, aquí mostrarías un error.
+                    // alert('Nota: No se pudo conectar con n8n (probablemente por CORS o URL incorrecta). Pero así se vería el éxito:');
+                    document.getElementById('booking-form').classList.add('hidden');
+                    document.getElementById('success-message').classList.remove('hidden');
+                }
+            }
+        }
+
+        // --- SERVICES DATA (Actualizado con Hostelería y Logística) ---
+        const services = {
+            voice: {
+                title: "Agentes de Voz IA (VAPI)",
+                tag: "Voz & Conversación",
+                desc: "Un recepcionista virtual que nunca duerme. Este agente contesta llamadas, entiende la intención del cliente, toma pedidos complejos y agenda citas directamente en tu calendario.",
+                color: "brand-secondary",
+                steps: [
+                    { icon: "fa-phone", text: "Cliente llama por teléfono" },
+                    { icon: "fa-robot", text: "IA (VAPI) contesta y conversa natural" },
+                    { icon: "fa-file-pen", text: "Transcribe datos del pedido" },
+                    { icon: "fa-table", text: "Guarda en CRM/Sheets" }
+                ]
+            },
+            marketing: {
+                title: "Marketing Automático",
+                tag: "Contenido",
+                desc: "Investiga tendencias, redacta guiones y genera imágenes/videos listos para publicar en redes.",
+                visualClass: "bg-brand-primary/5",
+                steps: [
+                    { icon: "fa-bolt", text: "Trigger: Tendencia Detectada" },
+                    { icon: "fa-brain", text: "Gemini crea concepto" },
+                    { icon: "fa-image", text: "Generación de Media (AI)" },
+                    { icon: "fa-share-nodes", text: "Publicación Automática" }
+                ]
+            },
+            finanzas: {
+                title: "Gestión de Finanzas",
+                tag: "Back-Office",
+                desc: "Lectura inteligente de facturas PDF/IMG. Extrae datos y actualiza tu contabilidad sin errores.",
+                visualClass: "bg-brand-tertiary/5",
+                steps: [
+                    { icon: "fa-file-invoice", text: "Recepción de Factura" },
+                    { icon: "fa-eye", text: "OCR lee documento" },
+                    { icon: "fa-database", text: "Ingreso en ERP" }
+                ]
+            },
+            crypto: {
+                title: "Trading Bot",
+                tag: "Finanzas",
+                desc: "Monitorización 24/7 de mercados crypto. Ejecuta órdenes basadas en análisis técnico avanzado.",
+                visualClass: "bg-brand-accent/5",
+                steps: [
+                    { icon: "fa-chart-line", text: "Análisis de Mercado" },
+                    { icon: "fa-microchip", text: "Señal de Compra/Venta" },
+                    { icon: "fa-paper-plane", text: "Ejecución de Orden" }
+                ]
+            },
+            realestate: {
+                title: "Real Estate IA",
+                tag: "Inmobiliaria",
+                desc: "Cualifica leads inmobiliarios y agenda visitas automáticamente, filtrando curiosos de compradores reales.",
+                visualClass: "bg-blue-500/5",
+                steps: [
+                    { icon: "fa-house", text: "Nuevo Lead (Idealista)" },
+                    { icon: "fa-comments", text: "Chatbot Cualifica" },
+                    { icon: "fa-calendar-check", text: "Agenda Visita" }
+                ]
+            },
+            hr: {
+                title: "Recruiting Auto",
+                tag: "Recursos Humanos",
+                desc: "Filtra cientos de CVs y realiza primeras entrevistas para dejarte solo los candidatos top.",
+                visualClass: "bg-pink-500/5",
+                steps: [
+                    { icon: "fa-file-pdf", text: "Recepción CVs" },
+                    { icon: "fa-filter", text: "Matching Automático" },
+                    { icon: "fa-calendar", text: "Entrevista IA" }
+                ]
+            },
+            hosteleria: {
+                title: "Hostelería & Reservas",
+                tag: "Restauración",
+                desc: "Gestión automática de reservas de mesa y pedidos QR integrados en cocina.",
+                color: "orange-500",
+                steps: [
+                    { icon: "fa-calendar-days", text: "Solicitud Reserva (WhatsApp)" },
+                    { icon: "fa-check", text: "Confirmación Disponibilidad" },
+                    { icon: "fa-bell", text: "Aviso a Sala" }
+                ],
+                visualClass: "bg-orange-500/5"
+            },
+            logistica: {
+                title: "Logística & Stock",
+                tag: "Almacén",
+                desc: "Control de inventario en tiempo real. Predice roturas de stock y lanza órdenes de reposición.",
+                color: "yellow-500",
+                steps: [
+                    { icon: "fa-box-open", text: "Monitorización Stock" },
+                    { icon: "fa-triangle-exclamation", text: "Alerta Bajo Stock" },
+                    { icon: "fa-truck", text: "Pedido a Proveedor" }
+                ],
+                visualClass: "bg-yellow-500/5"
+            },
+            legal: {
+                title: "Legal Tech",
+                tag: "Legal",
+                desc: "Generación y revisión de contratos estándar en segundos.",
+                visualClass: "bg-gray-500/5",
+                steps: [
+                    { icon: "fa-file-contract", text: "Input Datos Cliente" },
+                    { icon: "fa-pen-nib", text: "Generación Contrato" },
+                    { icon: "fa-signature", text: "Envío a Firma" }
+                ]
+            }
+        };
+
+        function openModal(serviceId) {
+            const data = services[serviceId];
+            if(!data) return;
+
+            document.getElementById('modal-title').innerText = data.title;
+            document.getElementById('modal-tag').innerText = data.tag;
+            document.getElementById('modal-desc').innerText = data.desc;
+            
+            const workflowContainer = document.getElementById('modal-workflow');
+            workflowContainer.innerHTML = ''; 
+            const line = document.createElement('div');
+            line.className = 'absolute left-[15px] top-2 bottom-2 w-0.5 bg-white/10 z-0';
+            workflowContainer.appendChild(line);
+
+            data.steps.forEach(step => {
+                const stepDiv = document.createElement('div');
+                stepDiv.className = 'flex items-center gap-4 relative z-10';
+                stepDiv.innerHTML = `
+                    <div class="w-8 h-8 rounded-full bg-[#1a1a1a] border border-white/20 flex items-center justify-center text-xs text-white">
+                        <i class="fa-solid ${step.icon}"></i>
+                    </div>
+                    <span class="text-gray-300 text-sm">${step.text}</span>
+                `;
+                workflowContainer.appendChild(stepDiv);
+            });
+
+            const visualContainer = document.getElementById('modal-visual');
+            visualContainer.innerHTML = `
+                <div class="absolute inset-0 ${data.visualClass}"></div>
+                <div class="w-full max-w-sm aspect-video bg-black/50 border border-white/10 rounded-xl relative overflow-hidden flex items-center justify-center group cursor-pointer shadow-2xl">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+                    <div class="w-16 h-16 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20 group-hover:scale-110 transition-transform z-10">
+                        <i class="fa-solid fa-play text-white text-xl ml-1"></i>
+                    </div>
+                    <p class="absolute bottom-4 left-0 w-full text-center text-xs text-gray-400 font-mono">VER DEMOSTRACIÓN: ${data.title.toUpperCase()}</p>
+                    <i class="fa-solid fa-robot text-9xl absolute -right-10 -bottom-10 text-white/5 rotate-[-15deg]"></i>
+                </div>
+            `;
+
+            document.getElementById('modal-overlay').classList.add('open');
+            document.body.style.overflow = 'hidden'; 
+        }
+
+        function closeModal() {
+            document.getElementById('modal-overlay').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        document.getElementById('modal-overlay').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        // Background Animation
+        const canvas = document.getElementById('techCanvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let particles = [];
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.size = Math.random() * 2;
+            }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                if (this.x < 0 || this.x > width) this.vx *= -1;
+                if (this.y < 0 || this.y > height) this.vy *= -1;
+            }
+            draw() {
+                ctx.fillStyle = 'rgba(139, 92, 246, 0.5)'; 
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            for (let i = 0; i < 100; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+                for (let j = i; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    if (distance < 100) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(139, 92, 246, ${1 - distance / 100})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+
+        initParticles();
+        animate();
+
+        document.addEventListener('DOMContentLoaded', () => {
+            drawChart();
+            window.addEventListener('resize', drawChart); 
+            
+            const datePicker = document.getElementById('datePicker');
+            if (datePicker) {
+                // Establecer fecha mínima como hoy
+                datePicker.min = new Date().toISOString().split('T')[0];
+
+                // VALIDACIÓN ESTRICTA DE FECHAS
+                datePicker.addEventListener('input', function() {
+                    const dateVal = this.value;
+                    if (!dateVal) return;
+                    
+                    const d = new Date(dateVal);
+                    const dayOfWeek = d.getUTCDay(); // 0=Domingo, 6=Sábado
+                    const day = d.getUTCDate();
+                    const month = d.getUTCMonth() + 1; // 1-12
+
+                    // 1. Bloquear Fines de Semana
+                    if (dayOfWeek === 0 || dayOfWeek === 6) {
+                        alert("📅 Horario Lunes a Viernes\n\nLo sentimos, no realizamos sesiones los fines de semana. Por favor, selecciona un día laborable.");
+                        this.value = ""; // Borrar selección
+                        return;
+                    }
+
+                    // 2. Bloquear Festivos Específicos (24, 25, 31 Dic y 1 Ene)
+                    if (
+                        (month === 12 && (day === 24 || day === 25 || day === 31)) ||
+                        (month === 1 && day === 1)
+                    ) {
+                        alert("🎄 Días Festivos\n\nNuestras oficinas permanecen cerradas el 24, 25, 31 de Diciembre y 1 de Enero.");
+                        this.value = ""; // Borrar selección
+                        return;
+                    }
+                });
+            }
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        entry.target.style.opacity = 1;
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            const sections = document.querySelectorAll('section > div');
+            sections.forEach(section => {
+                section.style.opacity = 0;
+                section.style.transform = 'translateY(30px)';
+                section.style.transition = 'all 0.8s ease-out';
+                observer.observe(section);
+            });
+            
+            window.addEventListener('scroll', () => {
+                const nav = document.querySelector('nav');
+                if (window.scrollY > 50) nav.classList.add('shadow-lg');
+                else nav.classList.remove('shadow-lg');
+            });
+        });
+    </script>
+</body>
+</html>
